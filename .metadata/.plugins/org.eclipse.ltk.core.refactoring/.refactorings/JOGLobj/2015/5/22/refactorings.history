@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 5 elements to &apos;JOGLmapa/src&apos;&#x0D;&#x0A;- Original project: &apos;JOGLobj&apos;&#x0D;&#x0A;- Destination element: &apos;JOGLmapa/src&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     VBO.java&#x0D;&#x0A;     Window.java&#x0D;&#x0A;     OBJReader.java&#x0D;&#x0A;     Main.java&#x0D;&#x0A;     Renderer.java" description="Copy compilation units" destination="=JOGLmapa/src" element1="/src&lt;{VBO.java" element2="/src&lt;{Window.java" element3="/src&lt;{OBJReader.java" element4="/src&lt;{Main.java" element5="/src&lt;{Renderer.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1432812102743" units="5" version="1.0"/>
+</session>

@@ -1,0 +1,358 @@
+import java.awt.AWTException;
+import java.awt.Point;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
+
+import static com.jogamp.opengl.GL.*;  // GL constants
+import static com.jogamp.opengl.GL2.*; // GL2 constants
+
+
+@SuppressWarnings("serial")
+public class Renderer extends GLCanvas implements GLEventListener, KeyListener, MouseMotionListener, MouseListener {
+	private GLU glu;
+	private float left_Right = 0.0f; //os x
+	private float forward_Backward = 0.0f; //os z
+	private float upward_Downward = -30.0f; //os y
+	private int liczWyjZaEkrX = 0; //liczy wyjscia myszy za ekran
+	private int liczWyjZaEkrY = 0;
+	private float mouseX =0.0f; //wszpolrzedne myszy na ekranie osi x
+	private float mouseY = 0.0f; //wspolrzedne myszy na ekranie osi y
+	private float predkosc = 0.3f; //predkosc poruszania sie
+	private float predkoscCam = 5; //predkosc ruszania kamera, im wiekszy tym wolniej
+	private boolean [] pressedKeys = new boolean[256];
+	VBO vbo;
+	Map map;
+	
+	public Renderer(){
+		addGLEventListener(this);
+		addKeyListener(this);
+		addMouseMotionListener(this);
+		addMouseListener(this);
+	}
+	
+	@Override
+	public void init(GLAutoDrawable drawable) {
+		GL2 gl = drawable.getGL().getGL2();
+		glu = new GLU();
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //kolor tla
+		gl.glClearDepth(1.0f);
+		gl.glEnable(GL_DEPTH_TEST);
+		gl.glDepthFunc(GL_LEQUAL);
+		gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+		gl.glShadeModel(GL_SMOOTH);
+		
+//		OBJReader obj = new OBJReader("D:\\Programy\\eclipse\\Projekty\\JOGLobj\\test3.obj");
+//		vbo = new VBO();
+//		vbo.createVBO(gl, obj);
+		
+		map = new Map(gl);
+		map.createObject("D:\\Programy\\eclipse\\Projekty\\JOGLmapa\\mapa.txt");
+		
+	}
+
+	@Override
+	public void dispose(GLAutoDrawable drawable) {
+		GL2 gl = drawable.getGL().getGL2();
+		gl.glDeleteBuffers(1, new int[] { vbo.vbo }, 0);
+	}
+
+	@Override
+	public void display(GLAutoDrawable drawable) {
+		GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
+	
+		GLUT glut = new GLUT();
+		keyMoving();
+		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		gl.glLoadIdentity();
+		
+		gl.glRotatef(mouseY, 1.0f, 0.0f,0.0f);
+		gl.glRotatef(mouseX, 0.0f, 1.0f, 0.0f);
+		gl.glTranslatef(left_Right, upward_Downward, forward_Backward); //ruch wsadem
+		
+		////////////////////////////////
+//		gl.glPushMatrix();
+//		szescian1(gl); //tworze szescian, ktory ma byc obrocony i tylko on
+//		vbo.renderVBO(gl);
+		map.renderFigures();
+//		gl.glPopMatrix();
+		
+		
+		gl.glPushMatrix();
+		gl.glTranslatef(5.0f, 1.0f, -10.0f); //tworze czajnik, ktory ma byc przesuniety i tylko on
+		glut.glutWireTeapot(0.505);
+		gl.glPopMatrix();
+		
+		gl.glPushMatrix();
+		platforma(gl); //tworze platforme, ktora ma byc przesunieta i tylko ona
+		gl.glPopMatrix();
+	}
+	
+	private GL2 szescian1(GL2 gl) {
+		gl.glRotatef(45.0f, 0.0f, 1.0f, 0.0f); //rotacje
+		gl.glRotatef(45.0f, 0.0f, 0.0f, 1.0f); //zaczecie pod katem
+		
+		
+		gl.glBegin(GL_QUADS);
+			gl.glColor3f(0, 1, 0); //green
+			gl.glVertex3f(1f, 1f, 1f);
+			gl.glColor3f(1, 0, 0); //red
+			gl.glVertex3f(1f, -1f, 1f);
+			gl.glColor3f(0, 0, 1); //blue
+			gl.glVertex3f(-1f, -1f, 1f);
+			gl.glColor3f(0, 1, 1); //light blue
+			gl.glVertex3f(-1.0f, 1.0f, 1f);
+			
+			gl.glColor3f(0, 1, 1); //light blue
+			gl.glVertex3f(-1.0f, 1.0f, 1f);
+			gl.glColor3f(0, 0, 1); //blue
+			gl.glVertex3f(-1f, -1f, 1f);
+			gl.glColor3f(1, 0, 0); //red
+			gl.glVertex3f(-1f, -1f, -1f);
+			gl.glColor3f(0, 1, 0); //green
+			gl.glVertex3f(-1f, 1f, -1f);
+			
+			gl.glColor3f(1, 0, 0); //red
+			gl.glVertex3f(-1f, -1f, -1f);
+			gl.glColor3f(0, 1, 0); //green
+			gl.glVertex3f(-1f, 1f, -1f);
+			gl.glColor3f(0, 0, 1); //blue
+			gl.glVertex3f(1f, 1f, -1f);
+			gl.glColor3f(0, 1, 1); //light blue
+			gl.glVertex3f(1f, -1f, -1f);
+			
+			gl.glColor3f(0, 0, 1); //blue
+			gl.glVertex3f(1f, 1f, -1f);
+			gl.glColor3f(0, 1, 1); //light blue
+			gl.glVertex3f(1f, -1f, -1f);
+			gl.glColor3f(1, 0, 0); //red
+			gl.glVertex3f(1f, -1f, 1f);
+			gl.glColor3f(0, 1, 0); //green
+			gl.glVertex3f(1f, 1f, 1f);
+			
+			gl.glColor3f(0, 1, 0); //green
+			gl.glVertex3f(1f, 1f, 1f);
+			gl.glColor3f(0, 1, 1); //light blue
+			gl.glVertex3f(-1f, 1f, 1f);
+			gl.glColor3f(0, 1, 0); //green
+			gl.glVertex3f(-1f, 1f, -1f);
+			gl.glColor3f(0, 0, 1); //blue
+			gl.glVertex3f(1f, 1f, -1f);
+			
+			gl.glColor3f(1, 0, 0); //red
+			gl.glVertex3f(1f, -1f, 1f);
+			gl.glColor3f(0, 0, 1); //blue
+			gl.glVertex3f(-1f, -1f, 1f);
+			gl.glColor3f(1, 0, 0); //red
+			gl.glVertex3f(-1f, -1f, -1f);
+			gl.glColor3f(0, 1, 1); //light blue
+			gl.glVertex3f(1f, -1f, -1f);
+			
+		gl.glEnd();
+		return gl;
+	}
+
+ 	private GL2 platforma(GL2 gl) {
+		gl.glColor3f(255, 248, 0);
+		gl.glBegin(GL_QUADS);
+			gl.glVertex3f(10f, -2f, -10f);
+			gl.glVertex3f(-10f, -2f, -10f);
+			gl.glVertex3f(-10f, -2f, 10f);
+			gl.glVertex3f(10f, -2f, 10f);
+		gl.glEnd();
+		return gl;
+	}
+	@Override
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+		GL2 gl = drawable.getGL().getGL2();
+		
+		if (height == 0)
+			height = 1;
+		
+		 float aspect = (float)width/height;
+		
+		gl.glViewport(0, 0, width, height);
+		
+		gl.glMatrixMode(GL_PROJECTION);
+		gl.glLoadIdentity();
+		glu.gluPerspective(45.0, aspect, 0.5, 100.0);
+		
+		gl.glMatrixMode(GL_MODELVIEW);
+		gl.glLoadIdentity();
+	}
+	
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		int keyCode = arg0.getKeyCode();
+		pressedKeys[keyCode] = true;
+		
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		int keyCode = arg0.getKeyCode();
+		pressedKeys[keyCode] = false;
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		Point point = e.getPoint();
+		mouseX = (float) (point.getX()/predkoscCam +liczWyjZaEkrX*this.getWidth()/predkoscCam);
+		mouseY = (float) (point.getY()/predkoscCam +liczWyjZaEkrY*this.getHeight()/predkoscCam);
+//		System.out.println("X: "+mouseX+" Y: "+mouseY);
+		Point location = e.getLocationOnScreen();
+//		System.out.println("LocX: "+location.getX()+" LocY: "+location.getY());
+	}
+	
+	private void keyMoving() {
+		if (pressedKeys[KeyEvent.VK_A]) {
+			float mouseXToRad = (float) Math.toRadians(mouseX);
+			float z = (float) Math.sin(mouseXToRad)*predkosc;
+			float x = (float) Math.sqrt(Math.pow(predkosc, 2)-Math.pow(z, 2));
+			if (mouseX >=0){
+				if (mouseX%360 >90 && mouseX%360 <270)
+					x=-x;
+			} else {
+				if (mouseX%360 <-90 && mouseX%360 >-270) 
+					x=-x;
+			}
+			left_Right += x;
+			forward_Backward +=z;
+//			System.out.println("Forward: "+z+" ("+forward_Backward+") Left: "+ x +" ("+left_Right+") MouseX: "+mouseX%360);
+		}
+		if (pressedKeys[KeyEvent.VK_D]) {
+			float mouseXToRad = (float) Math.toRadians(mouseX);
+			float z = (float) Math.sin(mouseXToRad)*predkosc;
+			float x = (float) Math.sqrt(Math.pow(predkosc, 2)-Math.pow(z, 2));
+			if (mouseX >=0){
+				if (mouseX%360 >90 && mouseX%360 <270)
+					x=-x;
+			} else {
+				if (mouseX%360 <-90 && mouseX%360 >-270) 
+					x=-x;
+			}
+			left_Right -= x;
+			forward_Backward -=z;
+//			System.out.println("Forward: "+z+" ("+forward_Backward+") Left: "+ x +" ("+left_Right+") MouseX: "+mouseX%360);
+		}
+		if (pressedKeys[KeyEvent.VK_W]){
+			float mouseYToRad = (float) Math.toRadians(mouseY);
+			float mouseXToRad = (float) Math.toRadians(mouseX);
+			float y = (float) (Math.sin(mouseYToRad)*predkosc); //upwarddownward
+			float p = (float) Math.sqrt(Math.pow(predkosc, 2)-Math.pow(y, 2));
+			float x = (float) (Math.sin(mouseXToRad)*p); //leftright
+			float z = (float) Math.sqrt(Math.pow(p, 2)-Math.pow(x, 2)); //forwardbackward
+			if (mouseX >=0){
+				if (mouseX%360 >90 && mouseX%360 <270)
+					z=-z;
+			} else {
+				if (mouseX%360 <-90 && mouseX%360 >-270) 
+					z=-z;
+			}
+			forward_Backward += z;
+			left_Right -= x;
+			upward_Downward += y;
+//			System.out.println("Forward: "+z+" ("+forward_Backward+") Left: "+ x +" ("+left_Right+") Up: "+y+" ("+upward_Downward+") MouseX: "+mouseX%360);
+		}
+		if (pressedKeys[KeyEvent.VK_S]) {
+			float mouseYToRad = (float) Math.toRadians(mouseY);
+			float mouseXToRad = (float) Math.toRadians(mouseX);
+			float y = (float) (Math.sin(mouseYToRad)*predkosc); //upwarddownward
+			float p = (float) Math.sqrt(Math.pow(predkosc, 2)-Math.pow(y, 2));
+			float x = (float) (Math.sin(mouseXToRad)*p); //leftright
+			float z = (float) Math.sqrt(Math.pow(p, 2)-Math.pow(x, 2)); //forwardbackward
+			if (mouseX >=0){
+				if (mouseX%360 >90 && mouseX%360 <270)
+					z=-z;
+			} else {
+				if (mouseX%360 <-90 && mouseX%360 >-270) 
+					z=-z;
+			}
+			forward_Backward -= z;
+			left_Right += x;
+			upward_Downward -= y;
+//			System.out.println("Forward: "+z+" ("+forward_Backward+") Left: "+ x +" ("+left_Right+") MouseX: "+mouseX%360);
+		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		if (this.isShowing()) {
+			try {
+				Robot rob = new Robot();
+				Point point = arg0.getPoint(); //wspolrzedne w oknie
+				Point location = arg0.getLocationOnScreen(); //wspolrzedne na ekranie
+				if (point.getX()<=0) {
+					rob.mouseMove((int) (location.getX()+this.getWidth()), (int) location.getY());
+					liczWyjZaEkrX--;
+				}
+				if (point.getX()>=this.getWidth()){
+					rob.mouseMove((int) (location.getX()-this.getWidth()), (int) location.getY());
+					liczWyjZaEkrX++;
+				}
+				if (point.getY()<=0){
+					rob.mouseMove((int) location.getX(), (int) (location.getY()+this.getHeight()));
+					liczWyjZaEkrY--;
+				}
+				if (point.getY()>=this.getHeight()){
+					rob.mouseMove((int) location.getX(), (int) (location.getY()-this.getHeight()));
+					liczWyjZaEkrY++;
+				}
+				
+			} catch (AWTException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+}
+

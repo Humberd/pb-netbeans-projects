@@ -1,0 +1,13 @@
+
+public class Main {
+
+	public static void main(String[] args) throws ZlaSciezkaException {
+		String sciezkaZrodlowa = "C:\\ProgramData";
+		String sciezkaDocelowa = "D:\\Programy\\GoogleDrive";
+		Folder folder = new Folder(sciezkaZrodlowa,sciezkaDocelowa);
+		folder.showListaPlikowSciezkiZrodlowej();
+		folder.showListaPlikowSciezkiDocelowej();
+		System.out.println(folder.szukaj("Steam"));
+
+}
+}

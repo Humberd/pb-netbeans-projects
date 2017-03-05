@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract method &apos;private void sukces()&apos; from &apos;Projektor.odejmij()&apos; to &apos;Projektor&apos;&#x0D;&#x0A;- Original project: &apos;HelloWorld&apos;&#x0D;&#x0A;- Method name: &apos;sukces&apos;&#x0D;&#x0A;- Destination type: &apos;Projektor&apos;&#x0D;&#x0A;- Declared visibility: &apos;private&apos;&#x0D;&#x0A;- Replace occurrences of statements with method" comments="false" description="Extract method &apos;sukces&apos;" destination="0" exceptions="false" flags="786434" id="org.eclipse.jdt.ui.extract.method" input="/src&lt;{Projektor.java" name="sukces" replace="true" selection="217 31" stamp="1425992870104" version="1.0" visibility="2"/>
+</session>

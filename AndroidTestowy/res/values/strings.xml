@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AndroidTestowy</string>
+    <string name="action_settings">Settings</string>
+    <string name="button">Działaj</string>
+    <string name="large_text">Wpisz jakieś słowo</string>
+    <string name="large_text1"></string>
+
+</resources>

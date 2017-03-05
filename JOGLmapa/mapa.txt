@@ -1,0 +1,21 @@
+<object>
+translate=0,0,0
+rotate=0,0,0
+scale=1,1,1
+
+src = D:\Programy\eclipse\Projekty\JOGLobj\test.obj
+<end>
+	<object>
+	translate=-5,4,-3
+	rotate=0,0,0
+	scale=1,1,1
+
+	src = D:\Programy\eclipse\Projekty\JOGLobj\test.obj
+	<end>
+		
+	</object>
+</object>
+X:-1.0 Y: 7.330127 Z: -2.4999995 -120
+X:-1.0 Y: 4.710101 Z: -0.30153704 -160
+
+x: 4.924039 y: -0.0 z: 0.8682402

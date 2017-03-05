@@ -1,0 +1,10 @@
+
+public class PS3 {
+
+	public static void main(String[] args) {
+		Zad1 ok = new Zad1();
+		System.out.println(ok.zaladzi());
+
+	}
+
+}

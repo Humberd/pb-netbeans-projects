@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Encapsulate field &apos;OBJReader.vertexArray&apos; in &apos;OBJReader&apos;&#x0D;&#x0A;- Original project: &apos;JOGLobj&apos;&#x0D;&#x0A;- Original element: &apos;OBJReader.vertexArray&apos;&#x0D;&#x0A;- Getter method name: &apos;getVertexArray&apos;&#x0D;&#x0A;- Setter method name: &apos;setVertexArray&apos;&#x0D;&#x0A;- Field visibility: &apos;private&apos;&#x0D;&#x0A;- Use getter and setter methods in declaring type" comments="false" declaring="true" description="Encapsulate field &apos;vertexArray&apos;" flags="589830" getter="getVertexArray" id="org.eclipse.jdt.ui.self.encapsulate" input="/src&lt;{OBJReader.java[OBJReader^vertexArray" insertion="0" setter="setVertexArray" stamp="1432246462535" version="1.0" visibility="2"/>
+</session>

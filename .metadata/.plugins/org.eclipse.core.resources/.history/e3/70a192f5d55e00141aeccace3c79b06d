@@ -1,0 +1,75 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Scanner;
+
+
+public class PS3 {
+
+	public static void main(String[] args) throws IOException {
+		Zad1 zad1 = new Zad1();
+		int[] tab;
+		int size=0;
+		Scanner sc = new Scanner (new File ("zad1.txt"));
+		while (sc.hasNextInt()){
+			sc.nextInt();
+			size++;
+		}
+		tab = new int [size];
+		sc.close();
+		sc = new Scanner (new File ("zad1.txt"));
+		for (int i = 0; i<tab.length; i++){
+			tab[i] = sc.nextInt();
+		}
+		System.out.println(Arrays.toString(tab));
+		tab = zad1.iteracja1(tab);
+		System.out.println(Arrays.toString(tab));
+		
+		PrintWriter pw = new PrintWriter ("odp1.txt");
+		for (int i = 0; i<tab.length; i++){
+			pw.print(tab[i]+ " ");
+		}
+		pw.close();
+		sc.close();
+		System.out.println("------------------------------");
+////////////////////////////////////ZAD 2///////////////////////////////////
+		
+		BufferedReader reader = new BufferedReader (new FileReader ("zad2.txt"));
+		int lines = 0;
+		while (reader.readLine() != null){
+			lines++;
+		}
+		reader.close();
+		int[] tabX = new int[lines];
+		int[] tabY = new int[lines];
+		sc = new Scanner (new File ("zad2.txt"));
+		for (int i = 0; i<lines; i++){
+			tabX[i] = sc.nextInt();
+			tabY[i] = sc.nextInt();
+		}
+		Zad2 zad2 = new Zad2();
+		System.out.println(Arrays.toString(tabX));
+		System.out.println(Arrays.toString(tabY));
+		System.out.println("------------------------------");
+		zad2.iteracja2(tabX, tabY);
+		pw = new PrintWriter ("odp2.txt");
+		pw.println(tabX[zad2.getwsp1()]+" "+tabY[zad2.getwsp1()]);
+		pw.println(tabX[zad2.getwsp2()]+" "+tabY[zad2.getwsp2()]);
+		pw.println(zad2.getOpElem());
+		pw.close();
+		sc.close();
+		System.out.println("------------------------------");
+////////////////////////////////////ZAD 3///////////////////////////////////		
+		sc = new Scanner (new File("zad3.txt"));
+		int n = sc.nextInt();
+		sc.close();
+		Zad3 zad3 = new Zad3();
+		zad3.rekurencyjne3(n);
+
+	}
+
+}

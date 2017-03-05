@@ -1,0 +1,7 @@
+
+public class Zad1 {
+	int tab[];
+	public int rekurencja(){
+		return 1;
+	}
+}

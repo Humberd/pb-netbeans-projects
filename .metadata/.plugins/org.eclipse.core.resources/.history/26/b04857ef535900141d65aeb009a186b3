@@ -1,0 +1,13 @@
+
+public class PS3 {
+
+	public static void main(String[] args) {
+		Zad1 zad1 = new Zad1();
+		int i=0;
+
+		System.out.println(zad1.rekurencja(5));
+
+
+	}
+
+}
